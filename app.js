@@ -1,3 +1,8 @@
+// in order to create this project use Node.js 
+// npm init -y
+// npm install sqlite3 
+// to run code use (  node app.js  )
+
 const { 
     createTables, 
     insertData, 
@@ -7,7 +12,7 @@ const {
     showStudentsByFaculty,
     db 
 } = require('./database');
-
+// we need database.js so import the file database.js
 async function main() {
     console.log('🎓 Student Database Management System\n');
     
