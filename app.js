@@ -1,0 +1,34 @@
+const { 
+    createTables, 
+    insertData, 
+    showStudents, 
+    showGrades, 
+    showAverageGrades,
+    showStudentsByFaculty,
+    db 
+} = require('./database');
+
+async function main() {
+    console.log('🎓 Student Database Management System\n');
+    
+    createTables();
+    
+    setTimeout(() => {
+        insertData();
+        
+        setTimeout(() => {
+            showStudents(() => {
+                showGrades(() => {
+                    showAverageGrades(() => {
+                        showStudentsByFaculty('Computer Science', () => {
+                            console.log('\n✅ Program completed');
+                            db.close();
+                        });
+                    });
+                });
+            });
+        }, 1000);
+    }, 1000);
+}
+
+main();
