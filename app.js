@@ -3,6 +3,9 @@
 // npm install sqlite3 
 // to run code use (  node app.js  )
 
+// Node.js + SQL 
+
+
 const { 
     createTables, 
     insertData, 
