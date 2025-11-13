@@ -4,7 +4,7 @@ const db = new sqlite3.Database('university.db', (err) => {
     if (err) {
         console.error('Error connecting to database:', err);
     } else {
-        console.log('✅ Connected to Database');
+        console.log('[+] ✅Connected to Database');
     }
 });
 
@@ -29,7 +29,15 @@ function createTables() {
             grade INTEGER,
             FOREIGN KEY (student_id) REFERENCES students(id),
             FOREIGN KEY (course_id) REFERENCES courses(id)
-        )`
+        )`,
+
+        `CREATE TABLE IF NOT EXISTS users (
+            id       INTEGER PRIMARY KEY,
+            username TEXT NOT NULL ,
+            email    TEXT UNIQUE NOT NULL ,
+            role     TEXT NOT NULL
+        )`,
+
     ];
     
     queries.forEach(query => {
@@ -40,7 +48,7 @@ function createTables() {
         });
     });
     
-    console.log('✅ Tables created');
+    console.log('[+] ✅Tables created');
 }
 
 function insertData() {
@@ -79,9 +87,25 @@ function insertData() {
     enrollments.forEach(enrollment => {
         db.run('INSERT INTO student_courses VALUES (?, ?, ?)', enrollment);
     });
+
+
+    const users = [
+        [1,'admin', 'admin@university.com', 'Administrator'],
+        [2, 'john_doe', 'john@university.com', 'Student'],
+        [3, 'maria_g', 'maria@university.com', 'Student'],
+        [4, 'prof_smith', 'smith@university.com', 'Teacher']
+    ];
+
+    users.forEach(user => {
+        db.run('INSERT INTO users VALUES (?,?,?,?)' , user)
+    })
     
-    console.log('✅ Data added');
+    console.log('[+] ✅Data for users added successfully ');
 }
+
+
+
+
 
 function showStudents(callback) {
     console.log('\n=== Student List ===');
@@ -151,7 +175,7 @@ function showStudentsByFaculty(faculty, callback) {
             console.error('Error:', err);
         } else {
             if (rows.length === 0) {
-                console.log('No students found in this faculty');
+                console.log('[-] No students found in this faculty');
             } else {
                 rows.forEach(row => {
                     console.log(`${row.id}. ${row.name} - Year ${row.year}`);
@@ -162,6 +186,23 @@ function showStudentsByFaculty(faculty, callback) {
     });
 }
 
+
+function UsersDb(callback){
+    console.log('\n=== Users List ===');
+
+    db.all('SELECT * FROM users ' , (err,rows) => {
+        if(err) console.log('[+] Error ' + err);
+        else {
+            rows.forEach(row => {
+                console.log(`${row.id}. ${row.username} - ${row.email} [${row.role}]`);
+            })
+        }
+
+        if (callback) callback();
+    })
+}
+
+
 module.exports = {
     db,
     createTables,
@@ -169,5 +210,6 @@ module.exports = {
     showStudents,
     showGrades,
     showAverageGrades,
-    showStudentsByFaculty
+    showStudentsByFaculty,
+    UsersDb
 };
